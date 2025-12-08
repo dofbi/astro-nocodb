@@ -1,0 +1,26 @@
+---
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+
+const sampleEntries = await getCollection('sample');
+---
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+		<title>NocoDB Astro Example</title>
+	</head>
+	<body>
+		<h1>Sample Views</h1>
+    <ul>
+      {sampleEntries.map(entry => (
+        <li>
+				<Image src={entry.data.Thumbnail[0].signedUrl} alt={entry.data.Album} width="50" height="50" />
+				{entry.data.Album}, (Platform: {entry.data.Platform}), (Budget: {entry.data.Budget})</li>
+      ))}
+    </ul>
+	</body>
+</html>
