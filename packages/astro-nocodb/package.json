@@ -2,7 +2,7 @@
   "name": "astro-nocodb",
   "description": "Use your NocoDB data in Astro projects with Astro Content Collections",
   "keywords": ["astro", "astro-integration", "astro-loader", "nocodb", "content-loader", "cms"],
-  "version": "0.0.1",
+  "version": "0.1.0",
   "author": "dofbi",
   "homepage": "https://github.com/dofbi/astro-nocodb",
   "repository": {
