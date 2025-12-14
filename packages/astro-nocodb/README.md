@@ -62,7 +62,42 @@ const collections = nocodbCollections({
 export { collections };
 ```
 
-### 3. Use your content
+### 3. Multiple content sources
+
+**src/content/config.ts**
+```typescript
+import { defineCollection, z } from 'astro:content';
+import { glob } from 'astro/loaders';
+import { nocodbCollections } from 'astro-nocodb/loaders';
+import { articlesConfig } from './collections/articles/config';
+
+const blog = defineCollection({
+  loader: glob({ base: './src/content/blog', pattern: '**/*.{md,mdx}' }),
+  schema: ({ image }) => z.object({
+    title: z.string(),
+    description: z.string(),
+    pubDate: z.coerce.date(),
+    heroImage: image().optional(),
+  }),
+});
+
+const data = nocodbCollections({
+  baseUrl: import.meta.env.NOCODB_BASE_URL,
+  apiKey: import.meta.env.NOCODB_API_KEY,
+  tables: {
+    articles: articlesConfig,
+    // Add more remote collections…
+  },
+});
+
+export const collections = {
+  blog,        // local Markdown content
+  ...data,   // remote NocoDB content
+};
+
+```
+
+### 4. Use your content
 
 ```astro
 ---

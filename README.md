@@ -117,6 +117,44 @@ API_TOKEN=your-xc-token
 ```
 Load via `import.meta.env` in Astro.
 
+### Multiple content sources
+Astro supports combining multiple content sources in a single collections export:
+
+```ts
+import { defineCollection, z } from 'astro:content';
+import { glob } from 'astro/loaders';
+import { nocodbCollections } from 'astro-nocodb/loaders';
+import { sampleConfig } from './collections/sample/config';
+
+const API_URL = import.meta.env.API_URL || process.env.API_URL;
+const API_TOKEN = import.meta.env.API_TOKEN || process.env.API_TOKEN;
+
+// Local blog posts
+const blog = defineCollection({
+  loader: glob({ base: './src/content/blog', pattern: '**/*.{md,mdx}' }),
+  schema: ({ image }) => z.object({
+    title: z.string(),
+    description: z.string(),
+    pubDate: z.coerce.date(),
+    heroImage: image().optional(),
+  }),
+});
+
+// NocoDB data collections
+const data = nocodbCollections({
+  baseUrl: API_URL,
+  apiKey: API_TOKEN,
+  tables: {
+    sample: sampleConfig,
+    // Add more remote collections…
+  },
+});
+
+export const collections = { blog, ...data };
+
+```
+This lets you query local blog posts and NocoDB content with `getCollection('blog')` and `getCollection('sample')` in your components/pages.
+
 ## Usage
 
 ### Querying Collections
